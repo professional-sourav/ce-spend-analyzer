@@ -1,33 +1,42 @@
+import { useEffect } from 'react';
+import './App.css';
+import BottomPopupSection from './components/BottomPopupSection/BottomPopupSection';
+import TopPopupSection from './components/TopPopupSection/TopPopupSection';
+
 function App() {
 
-  const handleBgColorChange = async () => {
+  const injectContentScript = () => {
 
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.tabs.query({ active: true, currentWindow: true}, (tabs) => {
 
-    if (!tab || tab.id === undefined) {
-      console.error("Active tab not found or tab ID is undefined.");
-      return;
-    }
+      if (tabs.length === 0 || !tabs[0].id) {
+        console.error('No active tab found');
+        return;        
+      }
 
-    const randomColor = Math.floor(Math.random()*16777215).toString(16);
+      chrome.scripting.executeScript({
+        target: { tabId: tabs[0].id },
+        files: ['contentScript.js']
+      })
+      .then(() => {
+        console.log('Content script injected successfully');
+      })
+      .catch((error) => {
+        console.error('Error injecting content script:', error);
+      });
+    })
+  };
 
-    chrome.scripting.executeScript({
-      target: { tabId: tab.id },
-      args: [randomColor],
-      func: changeBgColor,
-    });
-  }
-
-  const changeBgColor = (color: string) => {
-
-    console.log(`Changing background color to #${color}`);
-    
-    document.body.style.backgroundColor = `#${color}`;
-  }
+  useEffect(() => {
+    injectContentScript();
+  }, []);
 
   return (
     <>
-      <button onClick={handleBgColorChange}>Change Background Color</button>
+      <div className='app'>
+        <TopPopupSection />
+        <BottomPopupSection />
+      </div>
     </>
   )
 }

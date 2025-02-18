@@ -1,8 +1,21 @@
-#root {
+.app {
+  width: 100%;
+  min-height: 95vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: #222;
+  background-color: #fff;
+  text-align: center;
+  padding: 1rem;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+}
+
+#root {
+  width: 100%;
 }
 
 .logo {
