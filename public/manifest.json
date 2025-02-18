@@ -15,7 +15,8 @@
         "activeTab",
         "storage",
         "scripting",
-        "contextMenus"
+        "contextMenus",
+        "notifications"
     ],
     "host_permissions": ["<all_urls>"],
     "background": {

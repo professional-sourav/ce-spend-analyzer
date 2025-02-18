@@ -23,7 +23,7 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
 
         if (totalAmount) {
 
-            chrome.storage.sync.get(['totalAmount', 'limit'], function (budget) {
+            chrome.storage.sync.get(['totalAmount', 'max_spend_limit'], function (budget) {
                 let newTotal = 0;
                 if (budget.totalAmount) {
                     newTotal += parseInt(budget.totalAmount);
@@ -32,18 +32,18 @@ chrome.contextMenus.onClicked.addListener(async function (info, tab) {
                 newTotal += parseInt(selectedAmount);
 
                 chrome.storage.sync.set({ 'totalAmount': newTotal }, function () {
-                    console.log();
+                    console.log('Total amount set to ' + newTotal, budget.max_spend_limit);
                     
-                    // if (newTotal >= budget.limit) {
-                    //     const notifOptions = {
-                    //         type: 'basic',
-                    //         iconUrl: 'icon48.png',
-                    //         title: 'Limit reached!',
-                    //         message: 'Uh oh! Looks like you\'ve reached your limit!'
-                    //     };
+                    if (newTotal >= budget.max_spend_limit) {
+                        const notifOptions = {
+                            type: 'basic',
+                            iconUrl: 'images/icon48.png',
+                            title: 'Limit reached!',
+                            message: 'Uh oh! Looks like you\'ve reached your limit!'
+                        };
 
-                    //     chrome.notifications.create('limitNotif', notifOptions);
-                    // }
+                        chrome.notifications.create('limitNotif', notifOptions);
+                    }
                 });
             });
         } else {
